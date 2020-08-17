@@ -65,10 +65,10 @@ CREATE TABLE `tp_administrator` (
 DROP TABLE IF EXISTS `tp_auth_rule`;
 CREATE TABLE `tp_auth_rule` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '规则ID',
-  `pid` int unsigned NOT NULL DEFAULT '0' COMMENT '节点父ID',
-  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '节点标识',
-  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '节点名称',
-  `type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '节点类型（0为权限节点，1为菜单）',
+  `pid` int unsigned NOT NULL DEFAULT '0' COMMENT '规则父ID',
+  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '规则标识',
+  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '规则名称',
+  `type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '规则类型（0为权限节点，1为菜单）',
   `route` varchar(255) NOT NULL DEFAULT '' COMMENT '路由规则',
   `condition` varchar(255) NOT NULL DEFAULT '' COMMENT '规则条件（结合用户表其中的字段联合验证）',
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '图标',
