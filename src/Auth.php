@@ -22,15 +22,12 @@ use think\facade\Session;
  */
 // 数据库
 /*
-DROP TABLE IF EXISTS `tp_administrator`;
 CREATE TABLE `tp_administrator` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `username` varchar(32) NOT NULL DEFAULT '' COMMENT '用户名',
   `fullname` varchar(32) NOT NULL DEFAULT '' COMMENT '昵称/全名',
   `email` varchar(100) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `email_bind` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '邮箱已绑定',
   `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '手机号',
-  `mobile_bind` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '手机已绑定',
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '用户密码',
   `salt` varchar(64) NOT NULL DEFAULT '' COMMENT '密码盐值',
   `sex` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '性别',
@@ -46,44 +43,56 @@ CREATE TABLE `tp_administrator` (
   `login_times` int unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
   `create_time` int unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '-1软删除,0禁用,1可用',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '-1删除,0禁用,1可用',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='管理员表';
 
-DROP TABLE IF EXISTS `tp_auth_rule`;
-CREATE TABLE `tp_auth_rule` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '规则ID',
-  `pid` int unsigned NOT NULL DEFAULT '0' COMMENT '节点父ID',
-  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '节点标识',
-  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '节点名称',
-  `type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '节点类型（0为权限节点，1为菜单）',
-  `route` varchar(255) NOT NULL DEFAULT '' COMMENT '路由规则',
-  `condition` varchar(255) NOT NULL DEFAULT '' COMMENT '规则条件（结合用户表其中的字段联合验证）',
+CREATE TABLE `tp_auth_rule_cate` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '分类ID',
+  `pid` int unsigned NOT NULL DEFAULT '0' COMMENT '分类父ID',
+  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '分类标识',
+  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '分类名称',
   `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '图标',
-  `weight` int NOT NULL DEFAULT '0' COMMENT '权重',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `sort` smallint NOT NULL DEFAULT '0' COMMENT '排序号',
   `create_time` int unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态（0禁用,1可用）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='规则菜单分类表';
+
+CREATE TABLE `tp_auth_rule` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '规则ID',
+  `pid` int unsigned NOT NULL DEFAULT '0' COMMENT '规则父ID',
+  `type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '规则类型（0为权限节点，1为菜单，2为按钮）',
+  `cate_id` int unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '规则标识',
+  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '规则名称',
+  `level` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '层级',
+  `condition` varchar(255) NOT NULL DEFAULT '' COMMENT '规则条件（结合用户表其中的字段联合验证）',
+  `icon` varchar(50) NOT NULL DEFAULT '' COMMENT '图标',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `sort` smallint NOT NULL DEFAULT '0' COMMENT '排序号',
+  `create_time` int unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态（0禁用,1可用）',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`) USING BTREE,
-  KEY `pid` (`pid`),
-  KEY `weight` (`weight`)
+  KEY `pid` (`pid`)
 ) ENGINE=InnoDB COMMENT='角色规则节点表';
 
-DROP TABLE IF EXISTS `tp_auth_group`;
 CREATE TABLE `tp_auth_group` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '角色组ID',
   `pid` int unsigned NOT NULL DEFAULT '0' COMMENT '父组ID',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '组名',
   `rules` text NOT NULL COMMENT '规则IDS',
+  `sort` smallint NOT NULL DEFAULT '0' COMMENT '排序号',
   `create_time` int unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态（0禁用,1可用）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='角色组表';
 
-DROP TABLE IF EXISTS `tp_auth_group_access`;
 CREATE TABLE `tp_auth_group_access` (
   `uid` int unsigned NOT NULL COMMENT '用户ID',
   `group_id` int unsigned NOT NULL COMMENT '角色组ID',
