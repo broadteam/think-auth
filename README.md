@@ -5,7 +5,7 @@
 ## 安装
 
 ```php
-composer require broadteam/think-auth
+composer require broadteam/thinkphp-auth
 ```
 
 ## 配置
